@@ -5,7 +5,7 @@ This API will provide users with access to information about different movies, d
 At the moment, this project only includes a simple home page index.html and a documentation page.
 
 ## How to run
-To run locally, download and unzip the files, and run server.js using Node. Navigate to port 8080 in your browser. This will take you to the home page. If you add a file extention that includes the string 'documentation' you will be taken to the documentation page.  
+Nothing happens yet
 
 ## Dependencies/libraries/technologies used
 ### Node modules
