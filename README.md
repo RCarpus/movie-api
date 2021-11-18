@@ -21,6 +21,7 @@ HTTP, URL, FS
 body-parser ^1.19.0
 express ^4.17.1
 morgan ^1.10.0
+uuid ^8.3.2
 
 ## Browser support
 No cross browser testing has been performed.
