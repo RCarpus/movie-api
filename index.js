@@ -118,19 +118,8 @@ app.get('/movies/:title', (req, res) => {
 });
 
 // endpoint to search for all movies in a genre
-app.get('/movies/genres/:genre', (req, res) => {
-  let movieGenre = req.params.genre;
-  let responseObject = [];
-  movies.forEach((movie) => {
-    if (movie.genre === movieGenre) {
-      responseObject.push(movie);
-    }
-  });
-  if (responseObject.length > 0) {
-    res.status(200).json(responseObject);
-  } else {
-    res.status(404).send('Genre not found');
-  }
+app.get('/genres/:genre', (req, res) => {
+  res.status(200).send('Successful search for genre');
 });
 
 // endpoint to return info about director by name
