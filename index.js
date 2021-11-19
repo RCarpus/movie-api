@@ -2,170 +2,105 @@
 const express = require('express'),
   morgan = require('morgan'),
   bodyParser = require('body-parser'),
-  uuid = require('uuid');
+  uuid = require('uuid'),
+  mongoose = require('mongoose'),
+  Models = require('./models.js');
 
 const app = express();
+const Movies = Models.Movie;
+const Users = Models.User;
+
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(bodyParser.json());
-
-/*
-A list of movie objects to be parsed as JSON with the format:
-{
-  title: title, // string
-  genre: genre, //string
-  year: year, // int
-  director: director, // list of strings
-  boxOffice: boxOffice // int or undefined
-}
-*/
-let movies = [
-  {
-    title: 'The Lion King',
-    genre: 'family',
-    year: 1994,
-    director: ['Rob Minkoff', 'Roger Allers'],
-    boxOffice: 968500000
-  },
-  {
-    title: 'Thankskilling',
-    genre: 'horror',
-    year: 2008,
-    director: ['Jordan Downey'],
-    boxOffice: undefined
-  },
-  {
-    title: 'The Lego Movie',
-    genre: 'family',
-    year: 2014,
-    director: ['Phil Lord', 'Chris Miller'],
-    boxOffice: 468100000
-  },
-  {
-    title: 'Baby\'s Day Out',
-    genre: 'drama',
-    year: 1994,
-    director: ['Patrick Read Johnson'],
-    boxOffice: 30000000
-  },
-  {
-    title: 'Final Fantasy VII: Advent Children',
-    genre: 'action',
-    year: 2005,
-    director: ['Tetsuya Nomura'],
-    boxOffice: undefined
-  },
-  {
-    title: 'Pokemon: The First Movie',
-    genre: 'adventure',
-    year: 1999,
-    director: ['Kunihiko Yuyama'],
-    boxOffice: 172700000
-  },
-  {
-    title: 'Birdemic',
-    genre: 'horror',
-    year: 2010,
-    director: ['James Nguyen'],
-    boxOffice: undefined
-  },
-  {
-    title: 'Office Space',
-    genre: 'comedy',
-    year: 1999,
-    director: ['Mike Judge'],
-    boxOffice: undefined
-  },
-  {
-    title: 'South Park: Bigger Longer and Uncut',
-    genre: 'comedy',
-    year: 1999,
-    director: ['Trey Parker'],
-    boxOffice: 83100000}
-];
-
-// Dummy user data
-let users = [
-  {
-    email: 'ryancarpus@gmail.com',
-    username: 'Gimpurr'
-  },
-  {
-    email: 'rcarpus@umich.edu',
-    username: 'rcarpus'
-  }
-];
-
 
 // logging middleware
 app.use(morgan('common'));
 // make all files in /public available
 app.use(express.static('public'));
 
-// endpoint to send movies list as JSON object
+// endpoint to get all movies
 app.get('/movies', (req, res) => {
-  res.status(200).json(movies);
+  Movies.find()
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // endpoint to search for a movie by title
-app.get('/movies/:title', (req, res) => {
-  let movieTitle = req.params.title;
-  movies.forEach((movie) => {
-    if (movie.title === movieTitle) {
-      res.status(200).json(movie);
-    }
-  });
-  res.status(404).send('Movie not found');
+app.get('/movies/:Title', (req, res) => {
+  Movies.findOne( {"Title" : req.params.Title})
+    .then((movie) => {
+      res.status(201).json(movie);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
-// endpoint to search for all movies in a genre
-app.get('/genres/:genre', (req, res) => {
-  res.status(200).send('Successful search for genre');
+// endpoint to search for info about a genre
+app.get('/genres/:Genre', (req, res) => {
+  Movies.findOne( {"Genre.Name" : req.params.Genre})
+    .then((movie) => {
+      res.status(201).json(movie.Genre);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // endpoint to return info about director by name
-app.get('/directors/:name', (req, res) => {
-  res.send('Successful GET request returning data on a director');
+app.get('/directors/:Director', (req, res) => {
+  Movies.findOne( {"Director.Name" : req.params.Director})
+    .then((movie) => {
+      res.status(201).json(movie.Director);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
-// endpoint to allow new users to register
+// endpoint to add a new user
+/* Expect JSON in following format
+{
+  ID: Integer,
+  Username: String,
+  Password: String,
+  Email: String,
+  Birthday: Date
+}
+*/
 app.post('/users/register', (req, res) => {
-  let newUser = req.body;
-
-  if (!newUser.email || !newUser.username) {
-    res.status(400).send('Missing email or username');
-  } else {
-    newUser.id = uuid.v4();
-    users.push(newUser);
-    res.status(201).send(newUser)
-  }
-});
-
-//endpoint to allow users to change their username
-app.put('/users/:email/:username', (req, res) => {
-  let userEmail = req.params.email;
-  let newUsername = req.params.username;
-  users.forEach((user) => {
-    if (user.email === userEmail) {
-      user.username = newUsername;
-      res.status(200).send(`New username for email address ${user.email}: ${user.username}`);
-    }
-  });
-  res.status(404).send('A user account for the provided email address does not exist.');
-});
-
-// endpoint to allow users to add a movie to their favorites list
-app.put('/users/:username/favorites/add/:title', (req, res) => {
-  res.send(`Added ${req.params.title} to favorite's list for user: ${req.params.username}`);
-});
-
-// endpoint to allow users to remove a movie to their favorites list
-app.put('/users/:username/favorites/remove/:title', (req, res) => {
-  res.send(`Removed ${req.params.title} from favorite's list for user: ${req.params.username}`);
-});
-
-// endpoint to allow users to deregister
-app.delete('/users/deregister/:username', (req, res) => {
-  res.send(`User account has been removed`);
+  Users.findOne({ Username: req.body.Username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + ' already exists');
+      } else {
+        Users
+          .create({
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          .then((user) =>{res.status(201).json(user) })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+        })
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
 });
 
 // endpoint for home page
@@ -173,6 +108,114 @@ app.get('/', (req, res) => {
   let responseText = 'Nothing to see here. You\'d best move along now.';
   res.send(responseText);
 });
+
+// endpoint to get all users (NOT IN DOCS)
+app.get('/users', (req, res) => {
+  Users.find()
+    .then((users) => {
+      res.status(201).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+// endpoint to get a specific user (NOT IN DOCS)
+app.get('/users/:Username', (req, res) => {
+  Users.findOne({ Username: req.params.Username })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+// endpoint to change user info of a specific user (NOT IN DOCS)
+// this uses single callback for handling error
+// was shown in less for illustration
+// project should choose one style and stick with it
+/* Expect Jason in this format
+{
+  Username: String, (required)
+  Password: String, (required)
+  Email: String, (required)
+  Birthday: Date
+}
+*/
+app.put('/users/:Username', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
+    {
+      Username: req.body.Username,
+      Password: req.body.Password,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday
+    }
+  },
+  { new: true }, //Makes sure that updated doc is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
+// endpoint to add a movie to a user's list of favorites
+// refactor
+app.post('/users/:Username/movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+    $push: { FavoriteMovies: req.params.MovieID }
+    },
+    { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
+// endpoint to remove a movie from a user's list of favorites
+// refactor
+app.delete('/users/:Username/movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+    $pull: { FavoriteMovies: req.params.MovieID }
+    },
+    { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
+// endpoint to delete a user
+// need to get rid of placeholder version
+app.delete('/users/:Username', (req, res) => {
+  Users.findOneAndRemove({ Username: req.params.Username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
+      } else {
+        res.status(200).send(req.params.Username + ' was deleted');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
 
 // error handler
 app.use((err, req, res, next) => {
