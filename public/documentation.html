@@ -41,24 +41,40 @@
             A JSON object holding data about a single movie, containing an ID, title, description, genre, director, image URL, and flag for is-featured<br>
             example:<br>
             {<br>
-              "id": 1,<br>
+              "_id": 1,<br>
               "title": "The Lion King",<br>
-              "release-year": 1994,<br>
               "description": "Animated lions perform Hamlet",<br>
-              "genre": "family",<br>
-              "director": "['Rob Minkoff', 'Roger Allers']",<br>
-              "image-url": "http://movie-api.com/the-lion-king-image",<br>
+              "genre": {<br>
+                "_id" : 4,<br>
+                "name" : "animated",<br>
+                "description" : "movies made by drawing lots of pictures and then talking on top of them"<br>
+              }<br>
+              "director": {<br>
+                "_id" : 2,<br>
+                "name" : "Rob Minkoff",<br>
+                "bio" : "Robert Ralph Minkoff is an American filmmaker. He is known for co-directing the Academy Award-winning Disney animated feature The Lion King, along with directing Stuart Little, Stuart Little 2, The Haunted Mansion, The Forbidden Kingdom, and Mr. Peabody & Sherman.",<br>
+                "birthYear" : 1962<br>
+              }<br>
+                "imageUrl": "theLionKing.png",<br>
               "featured": true;<br>
             }
         </td>
       </tr>
 
       <tr>
-        <td>Return data about a genre by name</td>
-        <td>/movies/genres/[genre]</td>
+        <td>Return information about a genre by name</td>
+        <td>/genres/[genre]</td>
         <td>GET</td>
         <td>None</td>
-        <td>A JSON object holding data about each movie of the requested genre</td>
+        <td>
+          A JSON object holding a description of the requested genre<br>
+          example:<br>
+          {<br>
+            "_id": 3,<br>
+            "name": "horror",<br>
+            "description": "Movies that make you scared."<br>
+          }
+        </td>
       </tr>
 
       <tr>
@@ -67,13 +83,13 @@
         <td>GET</td>
         <td>None</td>
         <td>
-          A JSON object holding data about about the requested director (Bio, birth year, death year)<br>
+          A JSON object holding data about about the requested director (id, name, bio, birth year, death year if dead)<br>
           example:<br>
           {<br>
+            "_id" : 6,<br>
             "name": "Tetsuya Nomura"<br>
             "bio": "Tetsuya Nomura is a Japanese video game artist, designer and director working for Square Enix. He designed characters for the Final Fantasy series, debuting with Final Fantasy VI and continuing with various later installments."<br>
             "birth-year": 1970<br>
-            "death-year": undefined<br>
           }
         </td>
       </tr>
@@ -91,9 +107,10 @@
           }<br>
         </td>
         <td>
-          A JSON object holding data for the new user (email, username)<br>
+          A JSON object holding data for the new user (id, email, username)<br>
           example:<br>
           {<br>
+            "_id" : 23,<br>
             "email": "johndoe@gmail.com",<br>
             "username": "johndoe"<br>
           }<br>
