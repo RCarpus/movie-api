@@ -103,10 +103,7 @@ app.post('/users/register', (req, res) => {
     });
 });
 
-// endpoint to change user info of a specific user (NOT IN DOCS)
-// this uses single callback for handling error
-// was shown in less for illustration
-// project should choose one style and stick with it
+// endpoint to change user info of a specific user
 /* Expect Jason in this format
 {
   Username: String, (required)
@@ -116,7 +113,7 @@ app.post('/users/register', (req, res) => {
 }
 */
 app.put('/users/:Username', (req, res) => {
-  Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
+  Users.findOneAndUpdate({ Username: req.params.Username }, { $set: 
     {
       Username: req.body.Username,
       Password: req.body.Password,
@@ -124,48 +121,43 @@ app.put('/users/:Username', (req, res) => {
       Birthday: req.body.Birthday
     }
   },
-  { new: true }, //Makes sure that updated doc is returned
-  (err, updatedUser) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    } else {
-      res.json(updatedUser);
-    }
+  { new: true })
+  .then((updatedUser) => {
+    res.status(201).json(updatedUser);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
   });
 });
 
 // endpoint to add a movie to a user's list of favorites
-// refactor
 app.post('/users/:Username/movies/:MovieID', (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
     $push: { FavoriteMovies: req.params.MovieID }
-    },
-    { new: true }, // This line makes sure that the updated document is returned
-  (err, updatedUser) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    } else {
-      res.json(updatedUser);
-    }
+  },
+  { new: true })
+  .then((updatedUser) => {
+    res.json(updatedUser);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
   });
 });
 
 // endpoint to remove a movie from a user's list of favorites
-// refactor
 app.delete('/users/:Username/movies/:MovieID', (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
     $pull: { FavoriteMovies: req.params.MovieID }
-    },
-    { new: true }, // This line makes sure that the updated document is returned
-  (err, updatedUser) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    } else {
-      res.json(updatedUser);
-    }
+  },
+  { new: true })
+  .then((updatedUser) => {
+    res.json(updatedUser);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
   });
 });
 
