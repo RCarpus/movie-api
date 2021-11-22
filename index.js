@@ -1,4 +1,4 @@
-// Import express and morgan into my app
+// Import dependencies into my app
 const express = require('express'),
   morgan = require('morgan'),
   bodyParser = require('body-parser'),
@@ -103,36 +103,6 @@ app.post('/users/register', (req, res) => {
     });
 });
 
-// endpoint for home page
-app.get('/', (req, res) => {
-  let responseText = 'Nothing to see here. You\'d best move along now.';
-  res.send(responseText);
-});
-
-// endpoint to get all users (NOT IN DOCS)
-app.get('/users', (req, res) => {
-  Users.find()
-    .then((users) => {
-      res.status(201).json(users);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    });
-});
-
-// endpoint to get a specific user (NOT IN DOCS)
-app.get('/users/:Username', (req, res) => {
-  Users.findOne({ Username: req.params.Username })
-    .then((user) => {
-      res.json(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    });
-});
-
 // endpoint to change user info of a specific user (NOT IN DOCS)
 // this uses single callback for handling error
 // was shown in less for illustration
@@ -200,7 +170,6 @@ app.delete('/users/:Username/movies/:MovieID', (req, res) => {
 });
 
 // endpoint to delete a user
-// need to get rid of placeholder version
 app.delete('/users/:Username', (req, res) => {
   Users.findOneAndRemove({ Username: req.params.Username })
     .then((user) => {
@@ -216,6 +185,35 @@ app.delete('/users/:Username', (req, res) => {
     });
 });
 
+// endpoint to get all users
+app.get('/users', (req, res) => {
+  Users.find()
+    .then((users) => {
+      res.status(201).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+// endpoint to get a specific user
+app.get('/users/:Username', (req, res) => {
+  Users.findOne({ Username: req.params.Username })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+// endpoint for home page
+app.get('/', (req, res) => {
+  let responseText = 'Nothing to see here. You\'d best move along now.';
+  res.send(responseText);
+});
 
 // error handler
 app.use((err, req, res, next) => {
