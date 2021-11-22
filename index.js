@@ -18,6 +18,20 @@ require('./passport');
 app.use(bodyParser.json());
 let auth = require('./auth')(app); //This needs to come after bodyParser
 
+const cors = require('cors');
+//app.use(cors()); // allows access from all origins
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      let message = 'The CORS policy for this application doesn\'t allow access from the origin ' + origin;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 // logging middleware
 app.use(morgan('common'));
@@ -84,6 +98,7 @@ app.get('/directors/:Director', passport.authenticate('jwt', { session: false })
 }
 */
 app.post('/users/register', (req, res) => {
+  let hashedPassword = Users.hashPassword(req.body.Password);
   Users.findOne({ Username: req.body.Username })
     .then((user) => {
       if (user) {
@@ -92,7 +107,7 @@ app.post('/users/register', (req, res) => {
         Users
           .create({
             Username: req.body.Username,
-            Password: req.body.Password,
+            Password: hashedPassword,
             Email: req.body.Email,
             Birthday: req.body.Birthday
           })
