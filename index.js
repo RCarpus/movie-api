@@ -12,7 +12,12 @@ const Users = Models.User;
 
 mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
+const passport = require('passport');
+app.use(passport.initialize()); // needs to be before bodyParser
+require('./passport');
 app.use(bodyParser.json());
+let auth = require('./auth')(app); //This needs to come after bodyParser
+
 
 // logging middleware
 app.use(morgan('common'));
@@ -20,7 +25,7 @@ app.use(morgan('common'));
 app.use(express.static('public'));
 
 // endpoint to get all movies
-app.get('/movies', (req, res) => {
+app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.find()
     .then((movies) => {
       res.status(201).json(movies);
