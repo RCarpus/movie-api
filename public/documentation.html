@@ -15,155 +15,208 @@
 
     <h1>Movie API Documentation</h1>
     <h2>Author: Ryan Carpus</h2>
-    <p>This API will provide users with access to information about different movies, directors, and genres. Users will be able to sign up, update their personal information, and create a list of their favorite movies.</p>
+    <p>This API provides users with access to information about different movies, directors, and genres. Users can sign up, update their personal information, and create a list of their favorite movies.</p>
 
     <table>
-      <th>Business Logic</th>
+      <th>Function</th>
       <th>Endpoint URL</th>
       <th>HTTP Method</th>
       <th>Request body data format</th>
       <th>Response body data format</th>
 
       <tr>
-        <td>Return a list of ALL movies to the user</td>
+        <td>Get data for all movies</td>
         <td>/movies</td>
         <td>GET</td>
         <td>None</td>
-        <td>A JSON object holding data about all the movies</td>
+        <td>A JSON object holding complete data for all movies.</td>
       </tr>
 
       <tr>
-        <td>Return data for a single movie by title to the user</td>
-        <td>/movies/[title]</td>
+        <td>Get data for a single movie by title</td>
+        <td>/movies/[Title]</td>
         <td>GET</td>
         <td>None</td>
         <td>
-            A JSON object holding data about a single movie, containing an ID, title, description, genre, director, image URL, and flag for is-featured<br>
+            A JSON object holding data about a single movie, containing an ID, title, description, genre, director, image URL, and flag for is-featured.<br>
             example:<br>
             {<br>
-              "_id": 1,<br>
-              "title": "The Lion King",<br>
-              "description": "Animated lions perform Hamlet",<br>
-              "genre": {<br>
-                "_id" : 4,<br>
-                "name" : "animated",<br>
-                "description" : "movies made by drawing lots of pictures and then talking on top of them"<br>
+              "_id": "6197bc855ba878fd0afa7418",<br>
+              "Title": "The Lion King",<br>
+              "Description": "Animated lions perform a completely faithful rendition of Hamlet.",<br>
+              "Genre": {<br>
+                "Name" : "animated",<br>
+                "Description" : "movies made by drawing lots of pictures and then talking on top of them"<br>
               }<br>
-              "director": {<br>
-                "_id" : 2,<br>
-                "name" : "Rob Minkoff",<br>
-                "bio" : "Robert Ralph Minkoff is an American filmmaker. He is known for co-directing the Academy Award-winning Disney animated feature The Lion King, along with directing Stuart Little, Stuart Little 2, The Haunted Mansion, The Forbidden Kingdom, and Mr. Peabody & Sherman.",<br>
-                "birthYear" : 1962<br>
+              "Director": {<br>
+                "Name" : "Rob Minkoff",<br>
+                "Bio" : "Robert Ralph Minkoff is an American filmmaker. He is known for co-directing the Academy Award-winning Disney animated feature The Lion King, along with directing Stuart Little, Stuart Little 2, The Haunted Mansion, The Forbidden Kingdom, and Mr. Peabody & Sherman.",<br>
+                "BirthYear" : 1962<br>
               }<br>
-                "imageUrl": "theLionKing.png",<br>
-              "featured": true;<br>
+                "ImageUrl": "theLionKing.png",<br>
+              "Featured": false;<br>
             }
         </td>
       </tr>
 
       <tr>
-        <td>Return information about a genre by name</td>
-        <td>/genres/[genre]</td>
+        <td>Get information about a genre by name</td>
+        <td>/genres/[Genre]</td>
         <td>GET</td>
         <td>None</td>
         <td>
-          A JSON object holding a description of the requested genre<br>
+          A JSON object holding a description of the requested genre.<br>
           example:<br>
           {<br>
-            "_id": 3,<br>
-            "name": "horror",<br>
-            "description": "Movies that make you scared."<br>
+            "Name": "horror",<br>
+            "Description": "Movies that make you scared."<br>
           }
         </td>
       </tr>
 
       <tr>
-        <td>Return data about a director by name</td>
-        <td>/directors/[name]</td>
+        <td>Get data about a director by name</td>
+        <td>/directors/[Name]</td>
         <td>GET</td>
         <td>None</td>
         <td>
-          A JSON object holding data about about the requested director (id, name, bio, birth year, death year if dead)<br>
+          A JSON object holding data about about the requested director.<br>
           example:<br>
           {<br>
-            "_id" : 6,<br>
-            "name": "Tetsuya Nomura"<br>
-            "bio": "Tetsuya Nomura is a Japanese video game artist, designer and director working for Square Enix. He designed characters for the Final Fantasy series, debuting with Final Fantasy VI and continuing with various later installments."<br>
-            "birth-year": 1970<br>
+            "Name": "Tetsuya Nomura"<br>
+            "Bio": "Tetsuya Nomura is a Japanese video game artist, designer and director working for Square Enix. He designed characters for the Final Fantasy series, debuting with Final Fantasy VI and continuing with various later installments."<br>
+            "Birth-year": 1970<br>
           }
         </td>
       </tr>
 
       <tr>
-        <td>Allow new users to register</td>
+        <td>Register a new user</td>
         <td>/users/register</td>
         <td>POST</td>
         <td>
-          A JSON object holding data for a new user (email, username)<br>
+          A JSON object holding data for a new user<br>
           example:<br>
           {<br>
-            "email": "johndoe@gmail.com",<br>
-            "username": "johndoe"<br>
+            "Username": "johndoe"<br>
+            "Password": "aStrongPasSwOOrd"<br>
+            "Email": "johndoe@gmail.com",<br>
+            "Birthday": "1995-08-24"<br>
           }<br>
         </td>
         <td>
-          A JSON object holding data for the new user (id, email, username)<br>
+          A JSON object holding data for the new user.<br>
           example:<br>
           {<br>
-            "_id" : 23,<br>
-            "email": "johndoe@gmail.com",<br>
-            "username": "johndoe"<br>
+            "_id" : "619b8cfc843f95b8e96b8e66",<br>
+            "Username": "johndoe"<br>
+            "Password": "aStrongPasSwOOrd"<br>
+            "Email": "johndoe@gmail.com",<br>
+            "Birthday": "1995-08-24"<br>
+            "FavoriteMovies": []<br>
           }<br>
         </td>
       </tr>
 
       <tr>
-        <td>Allow users to update their username</td>
-        <td>/users/[email]/[username]</td>
+        <td>Update a user's data</td>
+        <td>/users/[Username]</td>
         <td>PUT</td>
-        <td>None</td>
-        <td>
-          A text message indicating the email/username combination that was updated<br>
+        <td>A JSON object holding the data to be updated for the user<br>
           example:<br>
-          "New username for email address johndoe@gmail.com: johnnydee"
+          {<br>
+            "email" : "KILLALLHUMANS@robots.com"<br>
+          }
+        </td>
+        <td>
+          A JSON object holding the complete updated user data.<br>
+          example:<br>
+          {<br>
+            "_id" : "6197ba7e5ba878fd0afa7415",<br>
+            "Username" : "KillerRobot",<br>
+            "Password" : "I am not a robot",<br>
+            "Email" : "KILLALLHUMANS@robots.com",<br>
+            "Birthday" : "1970-01-01T00:00:00.000Z",<br>
+            "FavoriteMovies": [<br>
+              "6197b3dd5ba878fd0afa740a",<br>
+              "6197b5925ba878fd0afa740f",<br>
+            ]<br>
+          }
         </td>
       </tr>
 
       <tr>
-        <td>Allow users to add a movie to their list of favorites</td>
-        <td>/users/[username]/favorites/add/[title]</td>
-        <td>PUT</td>
+        <td>Add a movie to a user's favorites list</td>
+        <td>/users/[Username]/movies/[:MovieID]</td>
+        <td>POST</td>
         <td>None</td>
         <td>
-          A text message indicating the movie that was added to the user's favorites<br>
+          A JSON object holding the updated user data.<br>
           example:<br>
-          "Movie: The Lion King was added to favorites for user: johnnydee"
+          {<br>
+            "_id" : "6197ba7e5ba878fd0afa7415",<br>
+            "Username" : "KillerRobot",<br>
+            "Password" : "I am not a robot",<br>
+            "Email" : "KILLALLHUMANS@robots.com",<br>
+            "Birthday" : "1970-01-01T00:00:00.000Z",<br>
+            "FavoriteMovies": [<br>
+              "6197b3dd5ba878fd0afa740a",<br>
+              "6197b5925ba878fd0afa740f",<br>
+            ]<br>
+          }
         </td>
       </tr>
 
       <tr>
-        <td>Allow users to remove a movie from their list of favorites</td>
-        <td>/users/[username]/favorites/remove/[title]</td>
-        <td>PUT</td>
-        <td>None</td>
-        <td>
-          A text message indicating the movie that was removed from the user's favorites<br>
-          example:<br>
-          "Movie: The Lion King was removed from favorites for user: johnnydee"
-        </td>
-      </tr>
-
-      <tr>
-        <td>Allow existing users to deregister</td>
-        <td>/users/deregister/[username]</td>
+        <td>Remove a movie from a user's favorites list</td>
+        <td>/users/[Username]/movies/[:MovieID]</td>
         <td>DELETE</td>
         <td>None</td>
         <td>
-          A text message indicating that a user email was removed<br>
+          A JSON object holding the updated user data.<br>
           example:<br>
-          "User account has been removed"
+          {<br>
+            "_id" : "6197ba7e5ba878fd0afa7415",<br>
+            "Username" : "KillerRobot",<br>
+            "Password" : "I am not a robot",<br>
+            "Email" : "KILLALLHUMANS@robots.com",<br>
+            "Birthday" : "1970-01-01T00:00:00.000Z",<br>
+            "FavoriteMovies": [<br>
+              "6197b3dd5ba878fd0afa740a",<br>
+            ]<br>
+          }
         </td>
       </tr>
+
+      <tr>
+        <td>Delete an existing user</td>
+        <td>/users/deregister/[Username]</td>
+        <td>DELETE</td>
+        <td>None</td>
+        <td>
+          A text message indicating that a user was deleted<br>
+          example:<br>
+          "KillerRobot was deleted."
+        </td>
+      </tr>
+
+      <tr>
+        <td>Retrieve data for all users</td>
+        <td>/users</td>
+        <td>GET</td>
+        <td>None</td>
+        <td>A JSON object holding all data for all users.</td>
+      </tr>
+
+      <tr>
+        <td>Retrieve data for a specific user</td>
+        <td>/users/[Username]</td>
+        <td>GET</td>
+        <td>None</td>
+        <td>A JSON object holding all data for the specified user.</td>
+      </tr>
+
+
 
     </table>
 
