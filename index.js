@@ -263,7 +263,7 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (r
 
 // endpoint for home page
 app.get('/', (req, res) => {
-  let responseText = 'Nothing to see here. You\'d best move along now.';
+  let responseText = 'Welcome to my movies API! Check out the <a href="https://rcarpus-movie-api.herokuapp.com/documentation.html">documentation</a> to get started!';
   res.send(responseText);
 });
 
