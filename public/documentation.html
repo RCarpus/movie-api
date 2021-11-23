@@ -20,6 +20,15 @@
     <h3>Navigation</h3>
     <ul>
       <li>
+        <a href="#register-a-new-user">Register a new user</a>
+      </li>
+      <li>
+        <a href="#login">Login</a>
+      </li>
+      <li>
+        <a href="#update-a-users-data">Update a user's data</a>
+      </li>
+      <li>
         <a href="#get-data-for-all-movies">Get data for all movies</a>
       </li>
       <li>
@@ -30,12 +39,6 @@
       </li>
       <li>
         <a href="#get-data-about-a-director-by-name">Get data about a director by name</a>
-      </li>
-      <li>
-        <a href="#register-a-new-user">Register a new user</a>
-      </li>
-      <li>
-        <a href="#update-a-users-data">Update a user's data</a>
       </li>
       <li>
         <a href="#add-a-movie-to-a-users-favorites-list">Add a movie to a user's favorites list</a>
@@ -60,6 +63,94 @@
       <th>HTTP Method</th>
       <th>Request body data format</th>
       <th>Response body data format</th>
+
+      <tr id="register-a-new-user">
+        <td>
+          <p>Register a new user</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/users/register</td>
+        <td>POST</td>
+        <td>
+          A JSON object holding data for a new user<br>
+          example:<br>
+          {<br>
+            "Username": "johndoe"<br>
+            "Password": "aStrongPasSwOOrd"<br>
+            "Email": "johndoe@gmail.com",<br>
+            "Birthday": "1995-08-24"<br>
+          }<br>
+        </td>
+        <td>
+          A JSON object holding data for the new user.<br>
+          example:<br>
+          {<br>
+            "_id" : "619b8cfc843f95b8e96b8e66",<br>
+            "Username": "johndoe"<br>
+            "Password": "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei"<br>
+            "Email": "johndoe@gmail.com",<br>
+            "Birthday": "2000-01-01T00:00:00.000Z"<br>
+            "FavoriteMovies": []<br>
+          }<br>
+        </td>
+      </tr>
+
+      <tr>
+        <td id="login">
+          <p>Login</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/login?Username=[Username]&Password=[Password]</td>
+        <td>POST</td>
+        <td>None</td>
+        <td>
+          A JSON object holding the user data and JWT required for subsequent requests<br>
+          example: <br>
+          {<br>
+            "user": {<br>
+                "_id": "619b8cfc843f95b8e96b8e66",<br>
+                "Username": "johndoe",<br>
+                "Password": "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
+                "Email": "johndoe@gmail.com",<br>
+                "Birthday": "2000-01-01T00:00:00.000Z",<br>
+                "FavoriteMovies": [],<br>
+            },<br>
+            "token": "eyJhbICrOYSYeL_zM"<br>
+        }
+        </td>
+      </tr>
+
+      <tr id="update-a-users-data">
+        <td>
+          <p>Update a user's data</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/users/[Username]</td>
+        <td>PUT</td>
+        <td>A JSON object holding the data to be updated for the user. Email, Password, and Birthday are all optional fields which may be included. This endpoint does not modify the user's favorite movies list even if a FavoriteMovies key is passed in.<br>
+          example:<br>
+          {<br>
+            "email" : "KILLALLHUMANS@robots.com"<br>
+            "Password": "IhateHumaNs"<br>
+            "Birthday": "1970-01-01"<br>
+          }
+        </td>
+        <td>
+          A JSON object holding the complete updated user data.<br>
+          example:<br>
+          {<br>
+            "_id" : "6197ba7e5ba878fd0afa7415",<br>
+            "Username" : "KillerRobot",<br>
+            "Password" : "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
+            "Email" : "KILLALLHUMANS@robots.com",<br>
+            "Birthday" : "1970-01-01T00:00:00.000Z",<br>
+            "FavoriteMovies": [<br>
+              "6197b3dd5ba878fd0afa740a",<br>
+              "6197b5925ba878fd0afa740f",<br>
+            ]<br>
+          }
+        </td>
+      </tr>
 
       <tr id="get-data-for-all-movies">
         <td>
@@ -192,67 +283,6 @@
         </td>
       </tr>
 
-      <tr id="register-a-new-user">
-        <td>
-          <p>Register a new user</p>
-          <a href="#">back to top</a>
-        </td>
-        <td>/users/register</td>
-        <td>POST</td>
-        <td>
-          A JSON object holding data for a new user<br>
-          example:<br>
-          {<br>
-            "Username": "johndoe"<br>
-            "Password": "aStrongPasSwOOrd"<br>
-            "Email": "johndoe@gmail.com",<br>
-            "Birthday": "1995-08-24"<br>
-          }<br>
-        </td>
-        <td>
-          A JSON object holding data for the new user.<br>
-          example:<br>
-          {<br>
-            "_id" : "619b8cfc843f95b8e96b8e66",<br>
-            "Username": "johndoe"<br>
-            "Password": "aStrongPasSwOOrd"<br>
-            "Email": "johndoe@gmail.com",<br>
-            "Birthday": "1995-08-24"<br>
-            "FavoriteMovies": []<br>
-          }<br>
-        </td>
-      </tr>
-
-      <tr id="update-a-users-data">
-        <td>
-          <p>Update a user's data</p>
-          <a href="#">back to top</a>
-        </td>
-        <td>/users/[Username]</td>
-        <td>PUT</td>
-        <td>A JSON object holding the data to be updated for the user<br>
-          example:<br>
-          {<br>
-            "email" : "KILLALLHUMANS@robots.com"<br>
-          }
-        </td>
-        <td>
-          A JSON object holding the complete updated user data.<br>
-          example:<br>
-          {<br>
-            "_id" : "6197ba7e5ba878fd0afa7415",<br>
-            "Username" : "KillerRobot",<br>
-            "Password" : "I am not a robot",<br>
-            "Email" : "KILLALLHUMANS@robots.com",<br>
-            "Birthday" : "1970-01-01T00:00:00.000Z",<br>
-            "FavoriteMovies": [<br>
-              "6197b3dd5ba878fd0afa740a",<br>
-              "6197b5925ba878fd0afa740f",<br>
-            ]<br>
-          }
-        </td>
-      </tr>
-
       <tr id="add-a-movie-to-a-users-favorites-list">
         <td>
           <p>Add a movie to a user's favorites list</p>
@@ -267,7 +297,7 @@
           {<br>
             "_id" : "6197ba7e5ba878fd0afa7415",<br>
             "Username" : "KillerRobot",<br>
-            "Password" : "I am not a robot",<br>
+            "Password" : "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
             "Email" : "KILLALLHUMANS@robots.com",<br>
             "Birthday" : "1970-01-01T00:00:00.000Z",<br>
             "FavoriteMovies": [<br>
@@ -292,7 +322,7 @@
           {<br>
             "_id" : "6197ba7e5ba878fd0afa7415",<br>
             "Username" : "KillerRobot",<br>
-            "Password" : "I am not a robot",<br>
+            "Password" : "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
             "Email" : "KILLALLHUMANS@robots.com",<br>
             "Birthday" : "1970-01-01T00:00:00.000Z",<br>
             "FavoriteMovies": [<br>
@@ -332,7 +362,7 @@
             {<br>
               "_id": "619be32b289da980ef297145",<br>
               "Username": "admin",<br>
-              "Password": "strongAdminPassword",<br>
+              "Password": "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
               "Email": "ryancarpus@gmail.com",<br>
               "Birthday": "1992-12-27T0<br>0:00:00.000Z",<br>
               "FavoriteMovies": [<br>
@@ -343,7 +373,7 @@
             {<br>
               "_id": "619be5ae289da980ef297162",<br>
               "Username": "KillerRobot",<br>
-              "Password": "extraStrongRobotPassword",<br>
+              "Password": "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
               "Email": "KILLALLHUaMANS@robots.com",<br>
               "Birthday": "1970-01-01T00:00:00.000Z",<br>
               "FavoriteMovies": [<br>
@@ -353,7 +383,7 @@
             {<br>
               "_id": "619be5e5289da980ef297165",<br>
               "Username": "Gimpurrbot 500x",<br>
-              "Password": "ILIKECATS",<br>
+              "Password": "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
               "Email": "gimpurr@cat.com",<br>
               "Birthday": "2004-06-23T00:00:00.000Z",<br>
               "FavoriteMovies": [<br>
@@ -379,7 +409,7 @@
           {<br>
             "_id": "619be5ae289da980ef297162",<br>
             "Username": "KillerRobot",<br>
-            "Password": "extraStrongRobotPassword",<br>
+            "Password": "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
             "Email": "KILLALLHUaMANS@robots.com",<br>
             "Birthday": "1970-01-01T00:00:00.000Z",<br>
             "FavoriteMovies": [<br>
@@ -389,8 +419,6 @@
 
         </td>
       </tr>
-
-
 
     </table>
 
