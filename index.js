@@ -104,10 +104,11 @@ app.get('/directors/:Director', passport.authenticate('jwt', { session: false })
 app.post('/users/register',
   [
     // check comes from express-validator
-    check('Username', 'Username is required').isLength({min: 5}),
+    check('Username', 'Username with at least 5 alphanumberic characters is required').isLength({min: 5}),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
-    check('Email', 'Email does not appear to be valid').isEmail()
+    check('Email', 'Email does not appear to be valid').isEmail(),
+    check('Birthday', 'Birthday must be in a valid date format (eg: yyyy-mm-dddd)').optional().isDate()
   ], (req, res) => {
     // sends back a list of errors if problems were found in inputs
     let errors = validationResult(req);
@@ -145,29 +146,49 @@ app.post('/users/register',
 // endpoint to change user info of a specific user
 /* Expect Jason in this format
 {
-  Username: String, (required)
-  Password: String, (required)
-  Email: String, (required)
-  Birthday: Date
+  Username: String, (optional)
+  Password: String, (optional)
+  Email: String, (optional)
+  Birthday: Date (optional)
 }
 */
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Users.findOneAndUpdate({ Username: req.params.Username }, { $set: 
-    {
-      Username: req.body.Username,
-      Password: req.body.Password,
-      Email: req.body.Email,
-      Birthday: req.body.Birthday
+app.put('/users/:Username', passport.authenticate('jwt', { session: false }),
+  [
+    // check for valid inputs using express-validator
+    check('Username', 'Username with at least 5 alphanumberic characters is required').isLength({min: 5}),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password may not be blank').optional().not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').optional().isEmail(),
+    check('Birthday', 'Birthday must be in a valid date format (eg: yyyy-mm-dddd)').optional().isDate()
+  ], (req, res) => {
+    // send back list of errors if present, for parameters that were entered
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
     }
-  },
-  { new: true })
-  .then((updatedUser) => {
-    res.status(201).json(updatedUser);
-  })
-  .catch((err) => {
-    console.error(err);
-    res.status(500).send('Error: ' + err);
-  });
+
+    let hashedPassword;
+    if (req.body.Password) {
+      hashedPassword = Users.hashPassword(req.body.Password);
+    }
+
+    Users.findOneAndUpdate({ Username: req.params.Username }, { $set: 
+      {
+        Username: req.body.Username,
+        Password: hashedPassword,
+        Email: req.body.Email,
+        Birthday: req.body.Birthday
+      }
+    },
+    { new: true })
+    .then((updatedUser) => {
+      res.status(201).json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // endpoint to add a movie to a user's list of favorites
