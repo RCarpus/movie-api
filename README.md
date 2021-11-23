@@ -1,7 +1,7 @@
 # Movie API
 
 ## Description
-This API provids users with access to information about different movies, directors, and genres. Users can sign up, update their personal information, and create a list of their favorite movies.  
+This API provides users with access to information about different movies, directors, and genres. Users can sign up, update their personal information, and create a list of their favorite movies.  
 
 ## Hosting
 The source code for the API is hosted using the Heroku PaaS service at [https://rcarpus-movie-api.herokuapp.com/](https://rcarpus-movie-api.herokuapp.com/).
