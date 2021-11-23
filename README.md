@@ -4,11 +4,11 @@
 This API provids users with access to information about different movies, directors, and genres. Users can sign up, update their personal information, and create a list of their favorite movies.  
 User authentication is handled using passport. Login requests use basic http authentication. Subsequent requests use JWT authentication. Anonymous users are only able to register a new user. Registered users have full access to the API after logging in.
 
-## How to run
-Download and unzip the project files. Run the command `node index.js` within the root directory of the project to start the server. This currently requires a local installation of the mongo database used with the API.
+## How to use
+This app is hosted using the Heroku PaaS service at [https://sleepy-sierra-86141.herokuapp.com/](https://sleepy-sierra-86141.herokuapp.com/).
 
 ## Endpoints
-To view a table containing instructions for using each endpoint, download the [documentation](https://github.com/RCarpus/movie-api/blob/task-9/public/documentation.html) and open in a browser.
+See the [documentation](https://rcarpus-movie-api.herokuapp.com/documentation.html) page for a full table describing the API endpoints.
 
 ## Dependencies/libraries/technologies used
 ### Node modules
