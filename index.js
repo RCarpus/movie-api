@@ -43,7 +43,8 @@ app.use(morgan('common'));
 app.use(express.static('public'));
 
 // endpoint to get all movies
-app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+//app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/movies', (req, res) => {
   Movies.find()
     .then((movies) => {
       res.status(201).json(movies);
@@ -56,7 +57,7 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) 
 
 // endpoint to search for a movie by title
 app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Movies.findOne( {"Title" : req.params.Title})
+  Movies.findOne({ "Title": req.params.Title })
     .then((movie) => {
       res.status(201).json(movie);
     })
@@ -68,7 +69,7 @@ app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req
 
 // endpoint to search for info about a genre
 app.get('/genres/:Genre', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Movies.findOne( {"Genre.Name" : req.params.Genre})
+  Movies.findOne({ "Genre.Name": req.params.Genre })
     .then((movie) => {
       res.status(201).json(movie.Genre);
     })
@@ -80,7 +81,7 @@ app.get('/genres/:Genre', passport.authenticate('jwt', { session: false }), (req
 
 // endpoint to return info about director by name
 app.get('/directors/:Director', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Movies.findOne( {"Director.Name" : req.params.Director})
+  Movies.findOne({ "Director.Name": req.params.Director })
     .then((movie) => {
       res.status(201).json(movie.Director);
     })
@@ -104,7 +105,7 @@ app.get('/directors/:Director', passport.authenticate('jwt', { session: false })
 app.post('/users/register',
   [
     // check comes from express-validator
-    check('Username', 'Username with at least 5 alphanumberic characters is required').isLength({min: 5}),
+    check('Username', 'Username with at least 5 alphanumberic characters is required').isLength({ min: 5 }),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
     check('Email', 'Email does not appear to be valid').isEmail(),
@@ -130,18 +131,18 @@ app.post('/users/register',
               Email: req.body.Email,
               Birthday: req.body.Birthday
             })
-            .then((user) =>{res.status(201).json(user) })
-          .catch((error) => {
-            console.error(error);
-            res.status(500).send('Error: ' + error);
-          })
+            .then((user) => { res.status(201).json(user) })
+            .catch((error) => {
+              console.error(error);
+              res.status(500).send('Error: ' + error);
+            })
         }
       })
       .catch((error) => {
         console.error(error);
         res.status(500).send('Error: ' + error);
       });
-});
+  });
 
 // endpoint to change user info of a specific user
 /* Expect Jason in this format
@@ -155,7 +156,7 @@ app.post('/users/register',
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }),
   [
     // check for valid inputs using express-validator
-    check('Username', 'Username with at least 5 alphanumberic characters is required').isLength({min: 5}),
+    check('Username', 'Username with at least 5 alphanumberic characters is required').isLength({ min: 5 }),
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('Password', 'Password may not be blank').optional().not().isEmpty(),
     check('Email', 'Email does not appear to be valid').optional().isEmail(),
@@ -173,7 +174,8 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }),
       hashedPassword = Users.hashPassword(req.body.Password);
     }
 
-    Users.findOneAndUpdate({ Username: req.params.Username }, { $set: 
+    Users.findOneAndUpdate({ Username: req.params.Username }, {
+      $set:
       {
         Username: req.body.Username,
         Password: hashedPassword,
@@ -181,9 +183,24 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }),
         Birthday: req.body.Birthday
       }
     },
+      { new: true })
+      .then((updatedUser) => {
+        res.status(201).json(updatedUser);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  });
+
+// endpoint to add a movie to a user's list of favorites
+app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+    $push: { FavoriteMovies: req.params.MovieID }
+  },
     { new: true })
     .then((updatedUser) => {
-      res.status(201).json(updatedUser);
+      res.json(updatedUser);
     })
     .catch((err) => {
       console.error(err);
@@ -191,34 +208,19 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }),
     });
 });
 
-// endpoint to add a movie to a user's list of favorites
-app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Users.findOneAndUpdate({ Username: req.params.Username }, {
-    $push: { FavoriteMovies: req.params.MovieID }
-  },
-  { new: true })
-  .then((updatedUser) => {
-    res.json(updatedUser);
-  })
-  .catch((err) => {
-    console.error(err);
-    res.status(500).send('Error: ' + err);
-  });
-});
-
 // endpoint to remove a movie from a user's list of favorites
 app.delete('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
     $pull: { FavoriteMovies: req.params.MovieID }
   },
-  { new: true })
-  .then((updatedUser) => {
-    res.json(updatedUser);
-  })
-  .catch((err) => {
-    console.error(err);
-    res.status(500).send('Error: ' + err);
-  });
+    { new: true })
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // endpoint to delete a user
