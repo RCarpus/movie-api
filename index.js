@@ -18,10 +18,11 @@ mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnified
 const cors = require('cors');
 app.use(cors()); // allows access from all origins
 
+app.use(bodyParser.json());
+
 const passport = require('passport');
 app.use(passport.initialize()); // needs to be before bodyParser
 require('./passport');
-app.use(bodyParser.json());
 let auth = require('./auth')(app); //This needs to come after bodyParser
 
 
