@@ -111,12 +111,13 @@ app.post('/users/register',
     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
     check('Password', 'Password is required').not().isEmpty(),
     check('Email', 'Email does not appear to be valid').isEmail(),
-    check('Birthday', 'Birthday must be in a valid date format (eg: yyyy-mm-dddd)').optional().isDate()
+    check('Birthday', 'Birthday must be in a valid date format (eg: yyyy-mm-dd)').optional().isDate()
   ], (req, res) => {
     // sends back a list of errors if problems were found in inputs
     let errors = validationResult(req);
 
     if (!errors.isEmpty()) {
+      console.log(errors.array());
       return res.status(422).json({ errors: errors.array() });
     }
 
