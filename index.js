@@ -46,7 +46,8 @@ app.use(morgan('common'));
 app.use(express.static('public'));
 
 // endpoint to get all movies
-app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+// app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+  app.get('/movies',  (req, res) => {
   Movies.find()
     .then((movies) => {
       res.status(201).json(movies);
@@ -206,6 +207,7 @@ app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { sess
       res.json(updatedUser);
     })
     .catch((err) => {
+      console.log('error')
       console.error(err);
       res.status(500).send('Error: ' + err);
     });
