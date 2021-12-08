@@ -38,6 +38,3 @@ HTTP, URL, FS
 | passport-jwt | ^4.0.0 |
 | passport-local | ^1.0.0 |
 | uuid | ^8.3.2 |
-
-## Credit
-This project was built by Ryan Carpus following the general instructions and guidelines within [CareerFoundry](https://careerfoundry.com/)'s web development immersion course.
