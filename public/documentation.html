@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>movie api - documentation</title>
+    <style>
+      table {border: 1px solid black;}
+      th {border: 1px solid black}
+      td {border: 1px solid black}
+    </style>
+  </head>
+
+  <body>
+
+    <h1>Movie API Documentation</h1>
+    <h2>Author: Ryan Carpus</h2>
+    <p>This API provides users with access to information about different movies, directors, and genres. Users can sign up, update their personal information, and create a list of their favorite movies.</p>
+
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+        <a href="#register-a-new-user">Register a new user</a>
+      </li>
+      <li>
+        <a href="#login">Login</a>
+      </li>
+      <li>
+        <a href="#update-a-users-data">Update a user's data</a>
+      </li>
+      <li>
+        <a href="#get-data-for-all-movies">Get data for all movies</a>
+      </li>
+      <li>
+        <a href="#get-data-for-a-single-movie-by-title">Get data for a single movie by title</a>
+      </li>
+      <li>
+        <a href="#get-information-about-a-genre-by-name">Get information about a genre by name</a>
+      </li>
+      <li>
+        <a href="#get-data-about-a-director-by-name">Get data about a director by name</a>
+      </li>
+      <li>
+        <a href="#add-a-movie-to-a-users-favorites-list">Add a movie to a user's favorites list</a>
+      </li>
+      <li>
+        <a href="#remove-a-movie-from-a-users-favories-list">Remove a movie from a user's favorites list</a>
+      </li>
+      <li>
+        <a href="#delete-an-existing-user">Delete an existing user</a>
+      </li>
+      <li>
+        <a href="#retrieve-data-for-all-users">Retrieve data for all users</a>
+      </li>
+      <li>
+        <a href="#retrieve-data-for-a-specific-user">Retrieve data for a specific user</a>
+      </li>
+    </ul>
+
+    <table>
+      <th>Function</th>
+      <th>Endpoint URL</th>
+      <th>HTTP Method</th>
+      <th>Request body data format</th>
+      <th>Response body data format</th>
+
+      <tr id="register-a-new-user">
+        <td>
+          <p>Register a new user</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/users/register</td>
+        <td>POST</td>
+        <td>
+          A JSON object holding data for a new user<br>
+          example:<br>
+          {<br>
+            "Username": "johndoe"<br>
+            "Password": "aStrongPasSwOOrd"<br>
+            "Email": "johndoe@gmail.com",<br>
+            "Birthday": "1995-08-24"<br>
+          }<br>
+        </td>
+        <td>
+          A JSON object holding data for the new user.<br>
+          example:<br>
+          {<br>
+            "_id" : "619b8cfc843f95b8e96b8e66",<br>
+            "Username": "johndoe"<br>
+            "Password": "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei"<br>
+            "Email": "johndoe@gmail.com",<br>
+            "Birthday": "2000-01-01T00:00:00.000Z"<br>
+            "FavoriteMovies": []<br>
+          }<br>
+        </td>
+      </tr>
+
+      <tr>
+        <td id="login">
+          <p>Login</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/login?Username=[Username]&Password=[Password]</td>
+        <td>POST</td>
+        <td>None</td>
+        <td>
+          A JSON object holding the user data and JWT required for subsequent requests<br>
+          example: <br>
+          {<br>
+            "user": {<br>
+                "_id": "619b8cfc843f95b8e96b8e66",<br>
+                "Username": "johndoe",<br>
+                "Password": "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
+                "Email": "johndoe@gmail.com",<br>
+                "Birthday": "2000-01-01T00:00:00.000Z",<br>
+                "FavoriteMovies": [],<br>
+            },<br>
+            "token": "eyJhbICrOYSYeL_zM"<br>
+        }
+        </td>
+      </tr>
+
+      <tr id="update-a-users-data">
+        <td>
+          <p>Update a user's data</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/users/[Username]</td>
+        <td>PUT</td>
+        <td>A JSON object holding the data to be updated for the user. Email, Password, and Birthday are all optional fields which may be included. This endpoint does not modify the user's favorite movies list even if a FavoriteMovies key is passed in.<br>
+          example:<br>
+          {<br>
+            "email" : "KILLALLHUMANS@robots.com"<br>
+            "Password": "IhateHumaNs"<br>
+            "Birthday": "1970-01-01"<br>
+          }
+        </td>
+        <td>
+          A JSON object holding the complete updated user data.<br>
+          example:<br>
+          {<br>
+            "_id" : "6197ba7e5ba878fd0afa7415",<br>
+            "Username" : "KillerRobot",<br>
+            "Password" : "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
+            "Email" : "KILLALLHUMANS@robots.com",<br>
+            "Birthday" : "1970-01-01T00:00:00.000Z",<br>
+            "FavoriteMovies": [<br>
+              "6197b3dd5ba878fd0afa740a",<br>
+              "6197b5925ba878fd0afa740f",<br>
+            ]<br>
+          }
+        </td>
+      </tr>
+
+      <tr id="get-data-for-all-movies">
+        <td>
+          <p>Get data for all movies</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/movies</td>
+        <td>GET</td>
+        <td>None</td>
+        <td>
+          A JSON object holding complete data for all movies.<br>
+          example:<br>
+          [<br>
+            {<br>
+              "Genre": {<br>
+                  "Name": "animated",<br>
+                  "Description": "movies made by drawing lots of pictures and then talking on top of them"<br>
+              },<br>
+              "Director": {<br>
+                  "Name": "Hayao Miyazaki",<br>
+                  "Bio": "Miyazaki Hayao is a Japanese animator, director, producer, screenwriter, author, and manga artist. A co-founder of Studio Ghibli, he has attained international acclaim as a masterful storyteller and creator of Japanese animated feature films, and is widely regarded as one of the most accomplished filmmakers in the history of animation.",<br>
+                  "BirthYear": 1941<br>
+              },<br>
+              "_id": "6197b6235ba878fd0afa7411",<br>
+              "Title": "Spirited Away",<br>
+              "Description": "A girl and her family visit an amusement park. The girl's parents are turned into pigs, and she is kidnapped by ghosts.",<br>
+              "Featured": true,<br>
+              "ImagePath": "spiritedAway.png"<br>
+            },<br>
+            {<br>
+              "Genre": {<br>
+                  "Name": "family",<br>
+                  "Description": "movies that are suitable for young children, but also enjoyed by adults"<br>
+              },<br>
+              "Director": {<br>
+                  "Name": "Chris Columbus",<br>
+                  "Bio": "Chris Joseph Columbus is an American film director, producer, and screenwriter. After writing screenplays for several teen comedies in the mid-1980s, he made his directorial debut with a teen adventure, Adventures in Babysitting (1987). Columbus gained recognition soon after with the highly successful Christmas comedy Home Alone (1990) and its sequel Home Alone 2: Lost in New York (1992).",<br>
+                  "BirthYear": 1958<br>
+              },<br>
+              "_id": "6197b8c85ba878fd0afa7412",<br>
+              "Title": "Harry Potter and the Sorcerer's Stone",<br>
+              "Description": "An eleven-year old boy goes to wizard school for a year and doesn't cast a single spell onscreen the entire time.",<br>
+              "Featured": false,<br>
+              "ImagePath": "harryPotterSorcerersStone.png"<br>
+            },<br>
+            {<br>
+              "Genre": {<br>
+                  "Name": "animated",<br>
+                  "Description": "movies made by drawing lots of pictures and then talking on top of them"<br>
+              },<br>
+              "Director": {<br>
+                  "Name": "Rob Minkoff",<br>
+                  "Bio": "Robert Ralph Minkoff is an American filmmaker. He is known for co-directing the Academy Award-winning Disney animated feature The Lion King, along with directing Stuart Little, Stuart Little 2, The Haunted Mansion, The Forbidden Kingdom, and Mr. Peabody & Sherman.",<br>
+                  "BirthYear": 1962<br>
+              },<br>
+              "_id": "6197bc855ba878fd0afa7418",<br>
+              "Title": "The Lion King",<br>
+              "Description": "Animated lions perform a completely faithful rendition of Hamlet.",<br>
+              "Featured": false,<br>
+              "ImagePath": "theLionKing.png"<br>
+            }<br>
+          ]  
+        </td>
+      </tr>
+
+      <tr id="get-data-for-a-single-movie-by-title">
+        <td>
+          <p>Get data for a single movie by title</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/movies/[Title]</td>
+        <td>GET</td>
+        <td>None</td>
+        <td>
+            A JSON object holding data about a single movie, containing an ID, title, description, genre, director, image URL, and flag for is-featured.<br>
+            example:<br>
+            {<br>
+              "_id": "6197bc855ba878fd0afa7418",<br>
+              "Title": "The Lion King",<br>
+              "Description": "Animated lions perform a completely faithful rendition of Hamlet.",<br>
+              "Genre": {<br>
+                "Name" : "animated",<br>
+                "Description" : "movies made by drawing lots of pictures and then talking on top of them"<br>
+              }<br>
+              "Director": {<br>
+                "Name" : "Rob Minkoff",<br>
+                "Bio" : "Robert Ralph Minkoff is an American filmmaker. He is known for co-directing the Academy Award-winning Disney animated feature The Lion King, along with directing Stuart Little, Stuart Little 2, The Haunted Mansion, The Forbidden Kingdom, and Mr. Peabody & Sherman.",<br>
+                "BirthYear" : 1962<br>
+              }<br>
+                "ImageUrl": "theLionKing.png",<br>
+              "Featured": false;<br>
+            }
+        </td>
+      </tr>
+
+      <tr id="get-information-about-a-genre-by-name">
+        <td>
+          <p>Get information about a genre by name</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/genres/[Genre]</td>
+        <td>GET</td>
+        <td>None</td>
+        <td>
+          A JSON object holding a description of the requested genre.<br>
+          example:<br>
+          {<br>
+            "Name": "horror",<br>
+            "Description": "Movies that make you scared."<br>
+          }
+        </td>
+      </tr>
+
+      <tr id="get-data-about-a-director-by-name">
+        <td>
+          <p>Get data about a director by name</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/directors/[Name]</td>
+        <td>GET</td>
+        <td>None</td>
+        <td>
+          A JSON object holding data about about the requested director.<br>
+          example:<br>
+          {<br>
+            "Name": "Tetsuya Nomura"<br>
+            "Bio": "Tetsuya Nomura is a Japanese video game artist, designer and director working for Square Enix. He designed characters for the Final Fantasy series, debuting with Final Fantasy VI and continuing with various later installments."<br>
+            "Birth-year": 1970<br>
+          }
+        </td>
+      </tr>
+
+      <tr id="add-a-movie-to-a-users-favorites-list">
+        <td>
+          <p>Add a movie to a user's favorites list</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/users/[Username]/movies/[:MovieID]</td>
+        <td>POST</td>
+        <td>None</td>
+        <td>
+          A JSON object holding the updated user data.<br>
+          example:<br>
+          {<br>
+            "_id" : "6197ba7e5ba878fd0afa7415",<br>
+            "Username" : "KillerRobot",<br>
+            "Password" : "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
+            "Email" : "KILLALLHUMANS@robots.com",<br>
+            "Birthday" : "1970-01-01T00:00:00.000Z",<br>
+            "FavoriteMovies": [<br>
+              "6197b3dd5ba878fd0afa740a",<br>
+              "6197b5925ba878fd0afa740f",<br>
+            ]<br>
+          }
+        </td>
+      </tr>
+
+      <tr id="remove-a-movie-from-a-users-favories-list">
+        <td>
+          <p>Remove a movie from a user's favorites list</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/users/[Username]/movies/[:MovieID]</td>
+        <td>DELETE</td>
+        <td>None</td>
+        <td>
+          A JSON object holding the updated user data.<br>
+          example:<br>
+          {<br>
+            "_id" : "6197ba7e5ba878fd0afa7415",<br>
+            "Username" : "KillerRobot",<br>
+            "Password" : "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
+            "Email" : "KILLALLHUMANS@robots.com",<br>
+            "Birthday" : "1970-01-01T00:00:00.000Z",<br>
+            "FavoriteMovies": [<br>
+              "6197b3dd5ba878fd0afa740a",<br>
+            ]<br>
+          }
+        </td>
+      </tr>
+
+      <tr id="delete-an-existing-user">
+        <td>
+          <p>Delete an existing user</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/users/deregister/[Username]</td>
+        <td>DELETE</td>
+        <td>None</td>
+        <td>
+          A text message indicating that a user was deleted<br>
+          example:<br>
+          "KillerRobot was deleted."
+        </td>
+      </tr>
+
+      <tr id="retrieve-data-for-all-users">
+        <td>
+          <p>Retrieve data for all users</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/users</td>
+        <td>GET</td>
+        <td>None</td>
+        <td>
+          A JSON object holding all data for all users.<br>
+          example:<br>
+          [<br>
+            {<br>
+              "_id": "619be32b289da980ef297145",<br>
+              "Username": "admin",<br>
+              "Password": "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
+              "Email": "ryancarpus@gmail.com",<br>
+              "Birthday": "1992-12-27T0<br>0:00:00.000Z",<br>
+              "FavoriteMovies": [<br>
+                "6197b45d5ba878fd0afa740b",<br>
+                "6197b4b15ba878fd0afa740c"<br>
+              ]<br>
+            },<br>
+            {<br>
+              "_id": "619be5ae289da980ef297162",<br>
+              "Username": "KillerRobot",<br>
+              "Password": "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
+              "Email": "KILLALLHUaMANS@robots.com",<br>
+              "Birthday": "1970-01-01T00:00:00.000Z",<br>
+              "FavoriteMovies": [<br>
+                "6197b3dd5ba878fd0afa740a"<br>
+              ]<br>
+            },<br>
+            {<br>
+              "_id": "619be5e5289da980ef297165",<br>
+              "Username": "Gimpurrbot 500x",<br>
+              "Password": "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
+              "Email": "gimpurr@cat.com",<br>
+              "Birthday": "2004-06-23T00:00:00.000Z",<br>
+              "FavoriteMovies": [<br>
+                "6197bc855ba878fd0afa7418",<br>
+                "6197b5d35ba878fd0afa7410"<br>
+              ]<br>
+            }<br>
+            ]
+        </td>
+      </tr>
+
+      <tr id="retrieve-data-for-a-specific-user">
+        <td>
+          <p>Retrieve data for a specific user</p>
+          <a href="#">back to top</a>
+        </td>
+        <td>/users/[Username]</td>
+        <td>GET</td>
+        <td>None</td>
+        <td>
+          A JSON object holding all data for the specified user.<br>
+          example:<br>
+          {<br>
+            "_id": "619be5ae289da980ef297162",<br>
+            "Username": "KillerRobot",<br>
+            "Password": "$2b$10$FXkr5zcaRCIgY1icGUrESuPq2WzfRXdY1.oISy9FWvY9MQlgQQ/ei",<br>
+            "Email": "KILLALLHUaMANS@robots.com",<br>
+            "Birthday": "1970-01-01T00:00:00.000Z",<br>
+            "FavoriteMovies": [<br>
+              "6197b3dd5ba878fd0afa740a"<br>
+            ]<br>
+          },<br>
+
+        </td>
+      </tr>
+
+    </table>
+
+  </body>
+</html>
