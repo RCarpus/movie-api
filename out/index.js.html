@@ -89,9 +89,14 @@ app.use(express.static('public'));
  * @param {req.headers} object - headers object containing the JWT formatted as below:&lt;br>
  * { "Authorization" : "Bearer &lt;jwt>"}
  * @returns {object} - JSON object containing data for all movies. Refer to the 
- * &lt;a href="https://rcarpus-movie-api.herokuapp.com/documentation.html#get-data-for-all-movies">
- * API endpoint documentation 
- * &lt;/a> for more details.
+ *   Genre: { Name: &lt;string>, Description: &lt;string> },    
+ *   Director: { Name: &lt;string>, Bio: &lt;string>, BirthYear: &lt;string> },    
+ *   _id: &lt;string>,   
+ *   Title: &lt;string>,   
+*   Description: &lt;string>,   
+ *   Featured: &lt;boolean>,   
+ *   ImagePath: &lt;string> (example: "spiritedAway.png"),  
+ * ]}
  */
 app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.find()
@@ -111,10 +116,16 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) 
  * @param {string} endpoint - /movies/:Title
  * @param {req.headers} object - headers object containing the JWT formatted as below:&lt;br>
  * { "Authorization" : "Bearer &lt;jwt>"}
- * @returns {object} - JSON object containing data for one movie. Refer to the 
- * &lt;a href="https://rcarpus-movie-api.herokuapp.com/documentation.html#get-data-for-a-single-movie-by-title">
- * API endpoint documentation 
- * &lt;/a> for more details.
+ * @returns {object} - JSON object containing data for one movie. 
+ * {
+ *   Genre: { Name: &lt;string>, Description: &lt;string> },  
+ *   Director: { Name: &lt;string>, Bio: &lt;string>, BirthYear: &lt;number> },  
+ *   _id: &lt;string>,  
+ *   Title: &lt;string>,  
+ *   Description: &lt;string>,  
+ *   Featured: &lt;boolean>,  
+ *   ImagePath: &lt;string> (example: "spiritedAway.png"),  
+ * }
  */
 app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ "Title": req.params.Title })
@@ -134,10 +145,8 @@ app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req
  * @param {string} endpoint - /genres/:Genre
  * @param {req.headers} object - headers object containing the JWT formatted as below:&lt;br>
  * { "Authorization" : "Bearer &lt;jwt>"}
- * @returns {object} - JSON object containing data for one genre. Refer to the 
- * &lt;a href="https://rcarpus-movie-api.herokuapp.com/documentation.html#get-information-about-a-genre-by-name">
- * API endpoint documentation 
- * &lt;/a> for more details.
+ * @returns {object} - JSON object containing data for one genre. 
+ * { Name: &lt;string>, Description: &lt;string> }
  */
 app.get('/genres/:Genre', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ "Genre.Name": req.params.Genre })
@@ -151,17 +160,14 @@ app.get('/genres/:Genre', passport.authenticate('jwt', { session: false }), (req
 });
 
 /**
- * @category API
  * @description Endpoint to get info about a director&lt;br>
  * Requires authorization JWT.
  * @method GETOneDirector
  * @param {string} endpoint - /directors/:Director
  * @param {req.headers} object - headers object containing the JWT formatted as below:&lt;br>
  * { "Authorization" : "Bearer &lt;jwt>"}
- * @returns {object} - JSON object containing data for one director. Refer to the 
- * &lt;a href="https://rcarpus-movie-api.herokuapp.com/documentation.html#get-data-about-a-director-by-name">
- * API endpoint documentation 
- * &lt;/a> for more details.
+ * @returns {object} - JSON object containing data for one director. 
+ * { Name: &lt;string>, Bio: &lt;string>, BirthYear: &lt;number> }
  */
 app.get('/directors/:Director', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ "Director.Name": req.params.Director })
@@ -186,10 +192,14 @@ app.get('/directors/:Director', passport.authenticate('jwt', { session: false })
  * "Email" : "johndo@gmail.com",&lt;br>
  * "Birthday" : "1995-08-24"&lt;br>
  * }
- * @returns {object} - JSON object containing data for the new user. Refer to the 
- * &lt;a href="https://rcarpus-movie-api.herokuapp.com/documentation.html#register-a-new-user">
- * API endpoint documentation 
- * &lt;/a> for more details.
+ * @returns {object} - JSON object containing data for the new user. 
+ * { _id: &lt;string>,  
+ *   Username: &lt;string>,  
+ *   Password: &lt;string> (hashed),  
+ *   Email: &lt;string>, 
+ *   Birthday: &lt;string>  
+ *   FavoriteMovies: []  
+ * }
  */
 app.post('/users/register',
   [
@@ -248,10 +258,14 @@ app.post('/users/register',
  * "Email" : "johndo@gmail.com",&lt;br>
  * "Birthday" : "1995-08-24"&lt;br>
  * }
- * @returns {object} - JSON object containing updated user data. Refer to the 
- * &lt;a href="https://rcarpus-movie-api.herokuapp.com/documentation.html#update-a-users-data">
- * API endpoint documentation 
- * &lt;/a> for more details.
+ * @returns {object} - JSON object containing updated user data. 
+ * { _id: &lt;string>,   
+ *   Username: &lt;string>,   
+ *   Password: &lt;string> (hashed),   
+ *   Email: &lt;string>,  
+ *   Birthday: &lt;string>  
+ *   FavoriteMovies: [&lt;string>]  
+ * }
  */
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }),
   [
@@ -300,10 +314,14 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }),
  * @param {string} endpoint - /users/:Username/movies/:MovieID
  * @param {req.headers} object - headers object containing the JWT formatted as below:&lt;br>
  * { "Authorization" : "Bearer &lt;jwt>"}
- * @returns {object} - JSON object containing updated user data. Refer to the 
- * &lt;a href="https://rcarpus-movie-api.herokuapp.com/documentation.html#add-a-movie-to-a-users-favorites-list">
- * API endpoint documentation 
- * &lt;/a> for more details.
+ * @returns {object} - JSON object containing updated user data. 
+ * { _id: &lt;string>,   
+ *   Username: &lt;string>,   
+ *   Password: &lt;string> (hashed),   
+ *   Email: &lt;string>,  
+ *   Birthday: &lt;string>  
+ *   FavoriteMovies: [&lt;string>]  
+ * }  
  */
 app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
@@ -326,10 +344,14 @@ app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { sess
  * @param {string} endpoint - /users/:Username/movies/:MovieID
  * @param {req.headers} object - headers object containing the JWT formatted as below:&lt;br>
  * { "Authorization" : "Bearer &lt;jwt>"}
- * @returns {object} - JSON object containing updated user data. Refer to the 
- * &lt;a href="https://rcarpus-movie-api.herokuapp.com/documentation.html#remove-a-movie-from-a-users-favories-list">
- * API endpoint documentation 
- * &lt;/a> for more details.
+ * @returns {object} - JSON object containing updated user data. 
+ * { _id: &lt;string>,   
+ *   Username: &lt;string>,   
+ *   Password: &lt;string> (hashed),   
+ *   Email: &lt;string>,  
+ *   Birthday: &lt;string>  
+ *   FavoriteMovies: [&lt;string>]  
+ * }  
  */
 app.delete('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
@@ -401,10 +423,14 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
  * @param {string} endpoint - /users
  * @param {req.headers} object - headers object containing the JWT formatted as below:&lt;br>
  * { "Authorization" : "Bearer &lt;jwt>"}
- * @returns {object} - JSON object containing data for all users. Refer to the 
- * &lt;a href="https://rcarpus-movie-api.herokuapp.com/documentation.html#retrieve-data-for-all-users">
- * API endpoint documentation 
- * &lt;/a> for more details.
+ * @returns {object} - JSON object containing data for all users. 
+ * {[  _id: &lt;string>,   
+ *     Username: &lt;string>,   
+ *     Password: &lt;string> (hashed),   
+ *     Email: &lt;string>,  
+ *     Birthday: &lt;string>  
+ *     FavoriteMovies: [&lt;string>]  
+ * ]}  
  */
 app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.find()
@@ -424,10 +450,14 @@ app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) =
  * @param {string} endpoint - /users/:Username
  * @param {req.headers} object - headers object containing the JWT formatted as below:&lt;br>
  * { "Authorization" : "Bearer &lt;jwt>"}
- * @returns {object} - JSON object containing data for the user. Refer to the 
- * &lt;a href="https://rcarpus-movie-api.herokuapp.com/documentation.html#retrieve-data-for-a-specific-user">
- * API endpoint documentation 
- * &lt;/a> for more details.
+ * @returns {object} - JSON object containing data for the user. 
+ * { _id: &lt;string>,   
+ *   Username: &lt;string>,   
+ *   Password: &lt;string> (hashed),   
+ *   Email: &lt;string>,  
+ *   Birthday: &lt;string>  
+ *   FavoriteMovies: [&lt;string>]  
+ * }
  */
 app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOne({ Username: req.params.Username })
@@ -477,7 +507,7 @@ app.listen(port, '0.0.0.0', () => {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Jan 28 2022 13:25:42 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Wed Feb 02 2022 08:07:23 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

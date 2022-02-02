@@ -23,10 +23,17 @@ let generateJWTToken = (user) => {
  * @description Endpoint to login the user<br>
  * @method POSTLoginUser
  * @param {string} endpoint - /login?Username=[Username]&Password=[Password]
- * @returns {object} - JSON object containing data for the user and a new JWT. Refer to the 
- * <a href="https://rcarpus-movie-api.herokuapp.com/documentation.html#login">
- * API endpoint documentation 
- * </a> for more details.
+ * @returns {object} - JSON object containing data for the user and a new JWT. 
+ * { user: {  
+ *   _id: <string>,  
+ *   Username: <string>,
+ *   Password: <string> (hashed),  
+ *   Email: <string>,  
+ *   Birthday: <string>,  
+ *   FavoriteMovies: [<string>]  
+ *   },   
+ *   token: <string>   
+ * }
  */
 module.exports = (router) => {
   router.post('/login', (req, res) => {
